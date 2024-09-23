@@ -19,14 +19,12 @@ import java.io.Serializable;
 import java.util.Date;
 
 
-@Aggregate
 @Entity
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
 public class MovimentacaoEstoque implements Serializable {
 
-    @AggregateIdentifier
     @Id
     private String id;
 
@@ -40,18 +38,22 @@ public class MovimentacaoEstoque implements Serializable {
 
     @OneToOne
     private Produto produto;
+    @OneToOne
+    private Almoxarifado almoxarifado;
     private String descricao;
     private Date data;
 
-
-    @CommandHandler
-    public MovimentacaoEstoque(EnviarPedidoEmPreparacaoCommand comando){
-        AggregateLifecycle.apply(new EnviadoPedidoEmPreparacao(comando.pedidoId));
-    }
-
-    @EventSourcingHandler
-    protected void on(EnviadoPedidoEmPreparacao evento){
-        this.id =evento.id;
-        this.tipo= String.valueOf(EnumTipoMovimentacaoEstoque.RECEBIDO);
+    public MovimentacaoEstoque(String tipo,
+                               int quantidade,
+                               Produto produto,
+                               Almoxarifado almoxarifado,
+                               String descricao,
+                               Date data) {
+        this.tipo = tipo;
+        this.quantidade = quantidade;
+        this.produto = produto;
+        this.almoxarifado = almoxarifado;
+        this.descricao = descricao;
+        this.data = data;
     }
 }

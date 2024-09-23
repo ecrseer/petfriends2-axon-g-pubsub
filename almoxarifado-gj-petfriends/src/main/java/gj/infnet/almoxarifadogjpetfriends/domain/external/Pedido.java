@@ -1,10 +1,12 @@
 package gj.infnet.almoxarifadogjpetfriends.domain.external;
 
+import gj.infnet.almoxarifadogjpetfriends.domain.Produto;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.util.Date;
+import java.util.List;
 
 @Data
 @AllArgsConstructor
@@ -16,6 +18,7 @@ public class Pedido {
     private Long clienteId;
     private String transporteId;
     private PedidoStatus status;
+    List<Produto> produtos;
 
 
     public enum PedidoStatus {

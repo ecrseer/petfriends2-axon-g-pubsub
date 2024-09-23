@@ -42,7 +42,7 @@ public class PetfriendsPedidosGjApplication implements CommandLineRunner {
     private void preparaPedido() {
 //        String mensagem = "Pedido-42";
 //        LOG.info("Preparando: " + mensagem);
-        Pedido pedido = new Pedido(IdUnico.criar(), Date.from(Instant.now()),12L,"abds-defg42", Pedido.PedidoStatus.ENVIADO);
+        Pedido pedido = new Pedido(IdUnico.criar(), Date.from(Instant.now()),12L,"abds-defg42", Pedido.PedidoStatus.EM_PREPARACAO);
         MensagemGPub mensagem = new MensagemGPub("em-pppa",pedido);
         streamBridge.send("pedido-em-preparacao-topico", mensagem);
     }
