@@ -34,7 +34,7 @@ public class Pedido  {
 
 
     public enum PedidoStatus {
-        NOVO, FECHADO, CANCELADO, ENVIADO
+        NOVO, FECHADO, EM_PREPARACAO, EM_TRANSITO, ENTREGUE
     }
 
     @CommandHandler
