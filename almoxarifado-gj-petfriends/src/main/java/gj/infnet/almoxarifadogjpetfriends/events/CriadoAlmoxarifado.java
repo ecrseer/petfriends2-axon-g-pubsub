@@ -5,6 +5,8 @@ import gj.infnet.almoxarifadogjpetfriends.domain.Almoxarifado;
 import gj.infnet.almoxarifadogjpetfriends.domain.Produto;
 import lombok.*;
 
+import java.util.List;
+
 
 @Getter
 public class CriadoAlmoxarifado extends Evento {

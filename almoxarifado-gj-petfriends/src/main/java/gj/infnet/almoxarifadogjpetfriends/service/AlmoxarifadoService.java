@@ -30,21 +30,21 @@ public class AlmoxarifadoService {
 
     public void receberPedidoEmPreparacao(Pedido pedido) {
         String idAlmoxarifado = "42asd";
-        Produto produto = pedido.getProdutos().get(0);
+
         commandGateway.send(new CriarAlmoxarifadoCommand(
-                idAlmoxarifado,produto
+                        idAlmoxarifado, pedido.getProdutos()
                 )
         );
         Optional<Almoxarifado> byId = almoxarifadoRepository.findById("42asd");
-        if(byId.isEmpty()){
+        if (byId.isEmpty()) {
             throw new IllegalStateException("N encontrei");
-        }else{
+        } else {
             Almoxarifado almoxarifado = byId.get();
-            System.out.println(almoxarifado.getProduto().getNome());
-            System.out.println(almoxarifado.getProduto().getId());
+            Produto produtoEnc = almoxarifado.getProdutos().get(0);
+            System.out.println(produtoEnc.getNome());
+            System.out.println(produtoEnc.getId());
 
         }
-
 
 
     }

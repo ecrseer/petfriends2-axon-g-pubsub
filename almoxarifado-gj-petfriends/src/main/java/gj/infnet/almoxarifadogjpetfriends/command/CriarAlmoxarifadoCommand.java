@@ -7,13 +7,15 @@ import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.ToString;
 
+import java.util.List;
+
 
 @Getter
 public class CriarAlmoxarifadoCommand extends Comando {
-    private final Produto produto;
+    private final List<Produto> produtos;
 
-    public CriarAlmoxarifadoCommand(String id, Produto produto) {
+    public CriarAlmoxarifadoCommand(String id, List<Produto> produtos) {
         super(id);
-        this.produto = produto;
+        this.produtos = produtos;
     }
 }

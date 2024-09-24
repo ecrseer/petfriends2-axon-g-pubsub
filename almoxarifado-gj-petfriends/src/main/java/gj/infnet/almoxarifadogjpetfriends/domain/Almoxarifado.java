@@ -16,38 +16,62 @@ import org.axonframework.modelling.command.AggregateMember;
 import org.axonframework.spring.stereotype.Aggregate;
 
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
 
 
 @Aggregate
-@Data
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
 public class Almoxarifado implements Serializable {
     @Id
     @AggregateIdentifier
-    String id;
-    String nome;
-
-    @AggregateMember
+    private String id;
+    private String nome;
 
 
-    @OneToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "produto_id", referencedColumnName = "id")
-    Produto produto;
+    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    @JoinColumn(name = "produto_id")
+    private List<Produto> produtos = new ArrayList<>();
 
     @CommandHandler
     public Almoxarifado(CriarAlmoxarifadoCommand comando) {
-        AggregateLifecycle.apply(new CriadoAlmoxarifado(comando.getId(), comando.getProduto()));
+        List<Produto> comandoProdutos = comando.getProdutos();
+
+        AggregateLifecycle.apply(new CriadoAlmoxarifado(comando.getId(), comandoProdutos.get(0)));
     }
 
     @EventSourcingHandler
     protected void on(CriadoAlmoxarifado evento) {
         this.id = evento.getId();
         this.nome = "Almoxarife de Joatinga";
-        this.produto = evento.getProduto();
-        System.out.println(this.produto);
+        this.produtos.add(evento.getProduto());
+        System.out.println(this.produtos);
     }
 
 
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
+    }
+
+    public String getNome() {
+        return nome;
+    }
+
+    public void setNome(String nome) {
+        this.nome = nome;
+    }
+
+    public List<Produto> getProdutos() {
+        return produtos;
+    }
+
+    public void setProdutos(List<Produto> produtos) {
+        this.produtos = produtos;
+    }
 }
