@@ -3,6 +3,7 @@ package gj.infnet.almoxarifadogjpetfriends.service;
 import gj.infnet.almoxarifadogjpetfriends.command.CriarAlmoxarifadoCommand;
 
 import gj.infnet.almoxarifadogjpetfriends.domain.Almoxarifado;
+import gj.infnet.almoxarifadogjpetfriends.domain.Produto;
 import gj.infnet.almoxarifadogjpetfriends.infra.external.Pedido;
 import gj.infnet.almoxarifadogjpetfriends.infra.MensagemGPub;
 import lombok.RequiredArgsConstructor;
@@ -29,8 +30,9 @@ public class AlmoxarifadoService {
 
     public void receberPedidoEmPreparacao(Pedido pedido) {
         String idAlmoxarifado = "42asd";
+        Produto produto = pedido.getProdutos().get(0);
         commandGateway.send(new CriarAlmoxarifadoCommand(
-                idAlmoxarifado,pedido.getProdutos().get(0)
+                idAlmoxarifado,produto
                 )
         );
         Optional<Almoxarifado> byId = almoxarifadoRepository.findById("42asd");

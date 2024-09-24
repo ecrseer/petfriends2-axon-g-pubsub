@@ -38,12 +38,12 @@ public class Almoxarifado implements Serializable {
 
     @CommandHandler
     public Almoxarifado(CriarAlmoxarifadoCommand comando) {
-        AggregateLifecycle.apply(new CriadoAlmoxarifado(comando.getAlmoxarifadoId(), comando.getProduto()));
+        AggregateLifecycle.apply(new CriadoAlmoxarifado(comando.getId(), comando.getProduto()));
     }
 
     @EventSourcingHandler
     protected void on(CriadoAlmoxarifado evento) {
-        this.id = evento.getAlmoxarifadoId();
+        this.id = evento.getId();
         this.nome = "Almoxarife de Joatinga";
         this.produto = evento.getProduto();
         System.out.println(this.produto);
