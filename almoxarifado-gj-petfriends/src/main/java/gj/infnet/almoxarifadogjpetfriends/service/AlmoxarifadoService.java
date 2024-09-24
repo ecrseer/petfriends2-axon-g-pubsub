@@ -1,17 +1,16 @@
 package gj.infnet.almoxarifadogjpetfriends.service;
 
 import gj.infnet.almoxarifadogjpetfriends.command.CriarAlmoxarifadoCommand;
-import gj.infnet.almoxarifadogjpetfriends.command.EmPreparacao.CriarProdutoCommand;
-import gj.infnet.almoxarifadogjpetfriends.command.EnviarPedidoEmPreparacaoCommand;
-import gj.infnet.almoxarifadogjpetfriends.domain.external.Pedido;
-import gj.infnet.almoxarifadogjpetfriends.infra.IdUnico;
+
+import gj.infnet.almoxarifadogjpetfriends.domain.Almoxarifado;
+import gj.infnet.almoxarifadogjpetfriends.infra.external.Pedido;
 import gj.infnet.almoxarifadogjpetfriends.infra.MensagemGPub;
 import lombok.RequiredArgsConstructor;
 import org.axonframework.commandhandling.gateway.CommandGateway;
 import org.springframework.messaging.Message;
 import org.springframework.stereotype.Service;
 
-import java.util.concurrent.TimeUnit;
+import java.util.Optional;
 import java.util.function.Consumer;
 
 @Service
@@ -19,6 +18,7 @@ import java.util.function.Consumer;
 public class AlmoxarifadoService {
 
     private final CommandGateway commandGateway;
+    private final AlmoxarifadoRepository almoxarifadoRepository;
 
     public Consumer<Message<MensagemGPub>> pedidoEmPreparacaoTopicoSub() {
         return mensagem -> {
@@ -29,11 +29,21 @@ public class AlmoxarifadoService {
 
     public void receberPedidoEmPreparacao(Pedido pedido) {
         String idAlmoxarifado = "42asd";
-        commandGateway.send(new CriarAlmoxarifadoCommand(idAlmoxarifado));
-        commandGateway.send
-                (new CriarProdutoCommand("42asd","Bananada de Joatinga")
-                );
-        commandGateway.send(new EnviarPedidoEmPreparacaoCommand(idAlmoxarifado, pedido, pedido.getProdutos()));
+        commandGateway.send(new CriarAlmoxarifadoCommand(
+                idAlmoxarifado,pedido.getProdutos().get(0)
+                )
+        );
+        Optional<Almoxarifado> byId = almoxarifadoRepository.findById("42asd");
+        if(byId.isEmpty()){
+            throw new IllegalStateException("N encontrei");
+        }else{
+            Almoxarifado almoxarifado = byId.get();
+            System.out.println(almoxarifado.getProduto().getNome());
+            System.out.println(almoxarifado.getProduto().getId());
+
+        }
+
+
 
     }
 

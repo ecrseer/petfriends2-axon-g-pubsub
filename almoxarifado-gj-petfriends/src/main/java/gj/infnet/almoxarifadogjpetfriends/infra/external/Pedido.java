@@ -1,4 +1,4 @@
-package gj.infnet.almoxarifadogjpetfriends.domain.external;
+package gj.infnet.almoxarifadogjpetfriends.infra.external;
 
 import gj.infnet.almoxarifadogjpetfriends.domain.Produto;
 import lombok.AllArgsConstructor;

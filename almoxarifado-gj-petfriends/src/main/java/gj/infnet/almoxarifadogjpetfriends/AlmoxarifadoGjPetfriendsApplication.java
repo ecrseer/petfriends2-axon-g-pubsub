@@ -1,7 +1,8 @@
 package gj.infnet.almoxarifadogjpetfriends;
 
 import gj.infnet.almoxarifadogjpetfriends.domain.Produto;
-import gj.infnet.almoxarifadogjpetfriends.domain.external.Pedido;
+import gj.infnet.almoxarifadogjpetfriends.infra.IdUnico;
+import gj.infnet.almoxarifadogjpetfriends.infra.external.Pedido;
 import gj.infnet.almoxarifadogjpetfriends.service.AlmoxarifadoService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
@@ -31,7 +32,9 @@ public class AlmoxarifadoGjPetfriendsApplication implements CommandLineRunner {
     public void run(String... args) throws Exception {
 
         System.out.println("RUNd1");
-        List<Produto> produtos = List.of(new Produto("Goiaba"));
+        List<Produto> produtos = List.of(
+                new Produto(IdUnico.criar(),"Goiaba",42D)
+        );
         Pedido emAndamento = new Pedido(UUID.randomUUID().toString(),
                 Date.from(Instant.now()),
                 12L,

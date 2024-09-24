@@ -1,7 +1,7 @@
 package gj.infnet.almoxarifadogjpetfriends.command;
 
 import gj.infnet.almoxarifadogjpetfriends.domain.Produto;
-import gj.infnet.almoxarifadogjpetfriends.domain.external.Pedido;
+import gj.infnet.almoxarifadogjpetfriends.infra.external.Pedido;
 
 import java.util.List;
 

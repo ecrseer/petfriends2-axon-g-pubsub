@@ -1,12 +1,16 @@
 package gj.infnet.almoxarifadogjpetfriends.events;
 
 
-import gj.infnet.almoxarifadogjpetfriends.domain.external.Pedido;
+import gj.infnet.almoxarifadogjpetfriends.domain.Produto;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.ToString;
 
-public class CriadoAlmoxarifado extends Evento{
 
-
-    public CriadoAlmoxarifado(String id) {
-        super(id);
-    }
+@ToString
+@EqualsAndHashCode
+@Data
+public class CriadoAlmoxarifado {
+    private final String almoxarifadoId;
+    private final Produto produto;
 }
