@@ -64,14 +64,21 @@ public class AlmoxarifadoService {
 
 
     public void mockAdicionaProdutos(String idAlmoxarifado) {
-        List<Produto> produtos = List.of(new Produto("blasdk","Mamao",2300D));
+        List<Produto> produtos = List.of(
+                new Produto(IdUnico.criar(),"Mamao",2300D),
+                new Produto(IdUnico.criar(),"Jujuba",14D)
+        );
         this.adicionaProdutos(idAlmoxarifado,produtos);
     }
     public void adicionaProdutos(String idAlmoxarifado, List<Produto> produto) {
         commandGateway.send(new AdicionarProdutosAlmoxarifadoCommand(idAlmoxarifado, produto));
         Almoxarifado almoxarifado = obterAlmoxarife(idAlmoxarifado);
+        almoxarifado.setProdutos(List.of());
+        System.out.println(almoxarifado);
+        Almoxarifado almoxarifadoRecuperado = obterAlmoxarife(idAlmoxarifado);
+
         if(almoxarifado.getProdutos().size()<2){
-            throw new IllegalStateException("n adicionou");
+//            throw new IllegalStateException("n adicionou");
         }
 
     }

@@ -10,13 +10,11 @@ import gj.infnet.almoxarifadogjpetfriends.events.CriadoAlmoxarifado;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
-import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.axonframework.commandhandling.CommandHandler;
 import org.axonframework.eventsourcing.EventSourcingHandler;
 import org.axonframework.modelling.command.AggregateIdentifier;
 import org.axonframework.modelling.command.AggregateLifecycle;
-import org.axonframework.modelling.command.AggregateMember;
 import org.axonframework.spring.stereotype.Aggregate;
 
 import java.io.Serializable;
@@ -54,6 +52,25 @@ public class Almoxarifado implements Serializable {
     }
 
 
+
+    @CommandHandler
+    public void on(AdicionarProdutosAlmoxarifadoCommand comando) {
+
+
+        for(Produto produto : comando.getProdutos()) {
+            AggregateLifecycle.apply(
+                    new AdicionadoProdutoAlmoxarifado(comando.getId(), produto)
+            );
+        }
+
+    }
+    @EventSourcingHandler
+    protected void on(AdicionadoProdutoAlmoxarifado evento) {
+        this.produtos.add(evento.getProduto());
+    }
+
+
+
     @CommandHandler
     public void on(AlterarAlmoxarifadoCommand comando) {
         AggregateLifecycle.apply(
@@ -63,28 +80,9 @@ public class Almoxarifado implements Serializable {
 
         );
     }
-
     @EventSourcingHandler
     protected void on(AlteradoAlmoxarifado evento) {
         this.setNome(evento.getNome());
-        System.out.println(this.produtos);
-    }
-
-
-
-
-    @CommandHandler
-    public void on(AdicionarProdutosAlmoxarifadoCommand comando) {
-        List<Produto> comandoProdutos = comando.getProdutos();
-
-        AggregateLifecycle.apply(
-                new AdicionadoProdutoAlmoxarifado(comando.getId(), comandoProdutos.get(0))
-        );
-    }
-
-    @EventSourcingHandler
-    protected void on(AdicionadoProdutoAlmoxarifado evento) {
-        this.produtos.add(new Produto(evento.getProduto()));
         System.out.println(this.produtos);
     }
 
