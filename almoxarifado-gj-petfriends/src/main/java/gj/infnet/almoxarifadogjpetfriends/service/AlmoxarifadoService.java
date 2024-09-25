@@ -97,13 +97,13 @@ public class AlmoxarifadoService {
         }
     }
 
-    public void mockAdicionaNome(String almoxarifado) {
-        this.commandGateway.send(new AlterarAlmoxarifadoCommand(almoxarifado, "Uepa"));
-        Almoxarifado almoxarifado1 = obterAlmoxarife(almoxarifado);
-        if (almoxarifado1 != null) {
-            System.out.println(almoxarifado1);
-        }
-    }
+//    public void mockAdicionaNome(String almoxarifado) {
+//        this.commandGateway.send(new AlterarAlmoxarifadoCommand(almoxarifado, "Uepa"));
+//        Almoxarifado almoxarifado1 = obterAlmoxarife(almoxarifado);
+//        if (almoxarifado1 != null) {
+//            System.out.println(almoxarifado1);
+//        }
+//    }
 
 
 }
