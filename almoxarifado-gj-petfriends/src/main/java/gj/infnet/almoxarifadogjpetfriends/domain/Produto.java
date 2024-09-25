@@ -24,9 +24,12 @@ public class Produto implements Serializable {
     private String nome;
     private Double preco;
 
+//    private Endereco endereco;
+
     public Produto(String nome) {
         this.nome = nome;
     }
+
     public Produto(Produto produto) {
         this.id = produto.getId();
         this.nome = produto.getNome();
