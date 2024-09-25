@@ -2,6 +2,7 @@ package gj.infnet.petfriendspedidosgj;
 
 import gj.infnet.petfriendspedidosgj.controller.PedidoQueryController;
 import gj.infnet.petfriendspedidosgj.domain.Pedido;
+import gj.infnet.petfriendspedidosgj.domain.Produto;
 import gj.infnet.petfriendspedidosgj.infra.IdUnico;
 import gj.infnet.petfriendspedidosgj.infra.MensagemGPub;
 import gj.infnet.petfriendspedidosgj.service.PedidoService;
@@ -47,7 +48,9 @@ public class PetfriendsPedidosGjApplication implements CommandLineRunner {
                 Date.from(Instant.now()),12L
                 ,"abds-defg42",
                 Pedido.PedidoStatus.EM_PREPARACAO,
-                List.of()
+                List.of(
+                        new Produto("32", "Brinquedo para Pássaros", 100D)
+                )
         );
         MensagemGPub mensagem = new MensagemGPub("em-pppa",pedido);
         streamBridge.send("pedido-em-preparacao-topico", mensagem);

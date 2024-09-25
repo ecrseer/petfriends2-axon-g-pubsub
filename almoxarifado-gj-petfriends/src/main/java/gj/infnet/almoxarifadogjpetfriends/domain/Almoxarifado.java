@@ -22,6 +22,8 @@ import org.axonframework.spring.stereotype.Aggregate;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 
 @Aggregate
@@ -42,16 +44,16 @@ public class Almoxarifado implements Serializable {
     @CommandHandler
     public Almoxarifado(CriarAlmoxarifadoCommand comando) {
         AggregateLifecycle.apply(new CriadoAlmoxarifado(
-                        comando.getId()
-                ));
+                comando.getId()
+        ));
     }
+
     @EventSourcingHandler
     protected void on(CriadoAlmoxarifado evento) {
         this.id = evento.getId();
         this.nome = "Almoxarife de Pindamonhagama";
         this.produtos = new ArrayList<>();
     }
-
 
 
     @CommandHandler
@@ -63,14 +65,19 @@ public class Almoxarifado implements Serializable {
         }
 
     }
+
     @EventSourcingHandler
     protected void on(RemovidoProdutoAlmoxarifado evento) {
         this.produtos.removeIf(item ->
-                item.getId().equals(evento.getProduto().getId())
+                {
+                    Pattern pattern = Pattern.compile(evento.getProduto().getNome(), Pattern.CASE_INSENSITIVE);
+                    Matcher matcher = pattern.matcher(item.getNome());
+                    return matcher.find();
+//                    return item.getId().equals(evento.getProduto().getId());
+                }
         );
 
     }
-
 
 
     @CommandHandler
@@ -82,12 +89,11 @@ public class Almoxarifado implements Serializable {
         }
 
     }
+
     @EventSourcingHandler
     protected void on(AdicionadoProdutoAlmoxarifado evento) {
         this.produtos.add(evento.getProduto());
     }
-
-
 
 
     @CommandHandler
@@ -99,6 +105,7 @@ public class Almoxarifado implements Serializable {
 
         );
     }
+
     @EventSourcingHandler
     protected void on(AlteradoAlmoxarifado evento) {
         this.setNome(evento.getNome());

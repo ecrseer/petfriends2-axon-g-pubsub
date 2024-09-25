@@ -27,10 +27,15 @@ public class Pedido {
         NOVO, FECHADO, EM_PREPARACAO, EM_TRANSITO, ENTREGUE
     }
 
-    public Pedido fact(LinkedHashMap json){
+    public Pedido(LinkedHashMap<String, Object> json) {
         Pedido pedido = new ObjectMapper().convertValue(json, Pedido.class);
-        return pedido;
 
+        this.id = pedido.getId();
+        this.dataPedido = pedido.getDataPedido();
+        this.clienteId = pedido.getClienteId();
+        this.transporteId = pedido.getTransporteId();
+        this.status = pedido.getStatus();
+        this.produtos = pedido.getProdutos();
     }
 
 
