@@ -7,11 +7,9 @@ import java.util.List;
 
 public class EnviarPedidoEmPreparacaoCommand extends Comando {
     public Pedido pedido;
-    public Produto produto;
 
-    public EnviarPedidoEmPreparacaoCommand(String idAlmoxarifado,Pedido pedido,Produto produto) {
+    public EnviarPedidoEmPreparacaoCommand(String idAlmoxarifado,Pedido pedido) {
         super(idAlmoxarifado);
         this.pedido = pedido;
-        this.produto = produto;
     }
 }

@@ -7,10 +7,8 @@ import lombok.*;
 
 @Getter
 public class CriadoAlmoxarifado extends Evento {
-    private final Produto produto;
 
-    public CriadoAlmoxarifado(String id, Produto produto) {
+    public CriadoAlmoxarifado(String id) {
         super(id);
-        this.produto = produto;
     }
 }

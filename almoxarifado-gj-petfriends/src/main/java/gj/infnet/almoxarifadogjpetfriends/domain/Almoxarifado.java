@@ -4,10 +4,12 @@ import gj.infnet.almoxarifadogjpetfriends.command.AdicionarProdutosAlmoxarifadoC
 import gj.infnet.almoxarifadogjpetfriends.command.AlterarAlmoxarifadoCommand;
 import gj.infnet.almoxarifadogjpetfriends.command.CriarAlmoxarifadoCommand;
 
+import gj.infnet.almoxarifadogjpetfriends.command.EnviarPedidoEmPreparacaoCommand;
 import gj.infnet.almoxarifadogjpetfriends.events.AdicionadoProdutoAlmoxarifado;
 import gj.infnet.almoxarifadogjpetfriends.events.AlteradoAlmoxarifado;
 import gj.infnet.almoxarifadogjpetfriends.events.CriadoAlmoxarifado;
 
+import gj.infnet.almoxarifadogjpetfriends.events.RemovidoProdutoAlmoxarifado;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
@@ -39,36 +41,53 @@ public class Almoxarifado implements Serializable {
 
     @CommandHandler
     public Almoxarifado(CriarAlmoxarifadoCommand comando) {
-        List<Produto> comandoProdutos = comando.getProdutos();
-
-        AggregateLifecycle.apply(new CriadoAlmoxarifado(comando.getId(), comandoProdutos.get(0)));
+        AggregateLifecycle.apply(new CriadoAlmoxarifado(
+                        comando.getId()
+                ))
+        ;
     }
 
     @EventSourcingHandler
     protected void on(CriadoAlmoxarifado evento) {
         this.id = evento.getId();
         this.nome = "Almoxarife de Pindamonhagama";
-        this.produtos.add(evento.getProduto());
+        this.produtos = new ArrayList<>();
     }
 
+
+    @CommandHandler
+    public void on(EnviarPedidoEmPreparacaoCommand comando) {
+        for (Produto produto : comando.pedido.getProdutos()) {
+            AggregateLifecycle.apply(
+                    new RemovidoProdutoAlmoxarifado(comando.getId(), produto)
+            );
+        }
+
+    }
+
+    @EventSourcingHandler
+    protected void on(RemovidoProdutoAlmoxarifado evento) {
+        this.produtos.removeIf(item ->
+                item.getId().equals(evento.getProduto().getId())
+        );
+
+    }
 
 
     @CommandHandler
     public void on(AdicionarProdutosAlmoxarifadoCommand comando) {
-
-
-        for(Produto produto : comando.getProdutos()) {
+        for (Produto produto : comando.getProdutos()) {
             AggregateLifecycle.apply(
                     new AdicionadoProdutoAlmoxarifado(comando.getId(), produto)
             );
         }
 
     }
+
     @EventSourcingHandler
     protected void on(AdicionadoProdutoAlmoxarifado evento) {
         this.produtos.add(evento.getProduto());
     }
-
 
 
     @CommandHandler
@@ -80,6 +99,7 @@ public class Almoxarifado implements Serializable {
 
         );
     }
+
     @EventSourcingHandler
     protected void on(AlteradoAlmoxarifado evento) {
         this.setNome(evento.getNome());
