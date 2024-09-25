@@ -43,16 +43,15 @@ public class Almoxarifado implements Serializable {
     public Almoxarifado(CriarAlmoxarifadoCommand comando) {
         AggregateLifecycle.apply(new CriadoAlmoxarifado(
                         comando.getId()
-                ))
-        ;
+                ));
     }
-
     @EventSourcingHandler
     protected void on(CriadoAlmoxarifado evento) {
         this.id = evento.getId();
         this.nome = "Almoxarife de Pindamonhagama";
         this.produtos = new ArrayList<>();
     }
+
 
 
     @CommandHandler
@@ -64,7 +63,6 @@ public class Almoxarifado implements Serializable {
         }
 
     }
-
     @EventSourcingHandler
     protected void on(RemovidoProdutoAlmoxarifado evento) {
         this.produtos.removeIf(item ->
@@ -72,6 +70,7 @@ public class Almoxarifado implements Serializable {
         );
 
     }
+
 
 
     @CommandHandler
@@ -83,11 +82,12 @@ public class Almoxarifado implements Serializable {
         }
 
     }
-
     @EventSourcingHandler
     protected void on(AdicionadoProdutoAlmoxarifado evento) {
         this.produtos.add(evento.getProduto());
     }
+
+
 
 
     @CommandHandler
@@ -99,7 +99,6 @@ public class Almoxarifado implements Serializable {
 
         );
     }
-
     @EventSourcingHandler
     protected void on(AlteradoAlmoxarifado evento) {
         this.setNome(evento.getNome());

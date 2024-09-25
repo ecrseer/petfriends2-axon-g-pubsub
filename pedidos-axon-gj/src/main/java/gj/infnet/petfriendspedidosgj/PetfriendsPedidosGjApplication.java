@@ -15,6 +15,7 @@ import org.springframework.cloud.stream.function.StreamBridge;
 
 import java.sql.Date;
 import java.time.Instant;
+import java.util.List;
 
 @SpringBootApplication
 public class PetfriendsPedidosGjApplication implements CommandLineRunner {
@@ -42,7 +43,12 @@ public class PetfriendsPedidosGjApplication implements CommandLineRunner {
     private void preparaPedido() {
 //        String mensagem = "Pedido-42";
 //        LOG.info("Preparando: " + mensagem);
-        Pedido pedido = new Pedido(IdUnico.criar(), Date.from(Instant.now()),12L,"abds-defg42", Pedido.PedidoStatus.EM_PREPARACAO);
+        Pedido pedido = new Pedido(IdUnico.criar(),
+                Date.from(Instant.now()),12L
+                ,"abds-defg42",
+                Pedido.PedidoStatus.EM_PREPARACAO,
+                List.of()
+        );
         MensagemGPub mensagem = new MensagemGPub("em-pppa",pedido);
         streamBridge.send("pedido-em-preparacao-topico", mensagem);
     }

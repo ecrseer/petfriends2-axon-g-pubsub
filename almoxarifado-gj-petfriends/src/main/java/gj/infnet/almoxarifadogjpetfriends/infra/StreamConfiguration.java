@@ -21,12 +21,12 @@ public class StreamConfiguration {
         this.commandGateway = commandGateway;
     }
 
-    @Bean
-    public Consumer<Message<MensagemGPub>> pedidoEmPreparacaoTopicoSub() {
-        return mensagem -> {
-            String msg = "pedidoEmPreparacao: " + mensagem.getPayload();
-                LOG.info(msg);
-        };
-    }
+//    @Bean
+//    public Consumer<Message<MensagemGPub>> pedidoEmPreparacaoTopicoSub() {
+//        return mensagem -> {
+//            String msg = "pedidoEmPreparacao: " + mensagem.getPayload();
+//                LOG.info(msg);
+//        };
+//    }
 
 }

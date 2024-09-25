@@ -1,11 +1,13 @@
 package gj.infnet.almoxarifadogjpetfriends.infra.external;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import gj.infnet.almoxarifadogjpetfriends.domain.Produto;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.util.Date;
+import java.util.LinkedHashMap;
 import java.util.List;
 
 @Data
@@ -23,6 +25,12 @@ public class Pedido {
 
     public enum PedidoStatus {
         NOVO, FECHADO, EM_PREPARACAO, EM_TRANSITO, ENTREGUE
+    }
+
+    public Pedido fact(LinkedHashMap json){
+        Pedido pedido = new ObjectMapper().convertValue(json, Pedido.class);
+        return pedido;
+
     }
 
 

@@ -13,7 +13,9 @@ import org.axonframework.modelling.command.AggregateLifecycle;
 import org.axonframework.spring.stereotype.Aggregate;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 @Aggregate
 @Entity
@@ -32,6 +34,10 @@ public class Pedido  {
     private PedidoStatus status;
 
 
+    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    @JoinColumn(name = "produto_id")
+    private List<Produto> produtos;
+
 
     public enum PedidoStatus {
         NOVO, FECHADO, EM_PREPARACAO, EM_TRANSITO, ENTREGUE
@@ -39,14 +45,62 @@ public class Pedido  {
 
     @CommandHandler
     public Pedido(CriarPedidoCommand criarComand){
-
         AggregateLifecycle.apply(new PedidoCriado());
     }
-
     @EventSourcingHandler
     protected void on(PedidoCriado evento){
         this.id=evento.id;
         this.status=evento.status;
     }
 
+
+
+
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
+    }
+
+    public Date getDataPedido() {
+        return dataPedido;
+    }
+
+    public void setDataPedido(Date dataPedido) {
+        this.dataPedido = dataPedido;
+    }
+
+    public Long getClienteId() {
+        return clienteId;
+    }
+
+    public void setClienteId(Long clienteId) {
+        this.clienteId = clienteId;
+    }
+
+    public String getTransporteId() {
+        return transporteId;
+    }
+
+    public void setTransporteId(String transporteId) {
+        this.transporteId = transporteId;
+    }
+
+    public PedidoStatus getStatus() {
+        return status;
+    }
+
+    public void setStatus(PedidoStatus status) {
+        this.status = status;
+    }
+
+    public List<Produto> getProdutos() {
+        return produtos;
+    }
+
+    public void setProdutos(List<Produto> produtos) {
+        this.produtos = produtos;
+    }
 }
