@@ -1,9 +1,12 @@
 package gj.infnet.almoxarifadogjpetfriends.service;
 
+import gj.infnet.almoxarifadogjpetfriends.command.AdicionarProdutosAlmoxarifadoCommand;
+import gj.infnet.almoxarifadogjpetfriends.command.AlterarAlmoxarifadoCommand;
 import gj.infnet.almoxarifadogjpetfriends.command.CriarAlmoxarifadoCommand;
 
 import gj.infnet.almoxarifadogjpetfriends.domain.Almoxarifado;
 import gj.infnet.almoxarifadogjpetfriends.domain.Produto;
+import gj.infnet.almoxarifadogjpetfriends.infra.IdUnico;
 import gj.infnet.almoxarifadogjpetfriends.infra.external.Pedido;
 import gj.infnet.almoxarifadogjpetfriends.infra.MensagemGPub;
 import lombok.RequiredArgsConstructor;
@@ -11,6 +14,8 @@ import org.axonframework.commandhandling.gateway.CommandGateway;
 import org.springframework.messaging.Message;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 import java.util.function.Consumer;
 
@@ -24,18 +29,28 @@ public class AlmoxarifadoService {
     public Consumer<Message<MensagemGPub>> pedidoEmPreparacaoTopicoSub() {
         return mensagem -> {
             Pedido pedido = (Pedido) mensagem.getPayload().getValor();
-            this.receberPedidoEmPreparacao(pedido);
+//            this.criaAlmoxarifado(pedido);
         };
     }
 
     public void receberPedidoEmPreparacao(Pedido pedido) {
-        String idAlmoxarifado = "42asd";
+        String almoxarifado = this.criaAlmoxarifado(pedido);
+        this.mockAdicionaProdutos(almoxarifado);
 
-        commandGateway.send(new CriarAlmoxarifadoCommand(
-                        idAlmoxarifado, pedido.getProdutos()
-                )
+    }
+
+    public String criaAlmoxarifado(Pedido pedido) {
+        String idAlmoxarifado = "42asd";
+        commandGateway.send(
+                new CriarAlmoxarifadoCommand(idAlmoxarifado,
+                        pedido.getProdutos())
         );
-        Optional<Almoxarifado> byId = almoxarifadoRepository.findById("42asd");
+        this.obterAlmoxarife(idAlmoxarifado);
+        return idAlmoxarifado;
+    }
+
+    public Almoxarifado obterAlmoxarife (String idAlmoxarifado) {
+        Optional<Almoxarifado> byId = almoxarifadoRepository.findById(idAlmoxarifado);
         if (byId.isEmpty()) {
             throw new IllegalStateException("N encontrei");
         } else {
@@ -43,10 +58,30 @@ public class AlmoxarifadoService {
             Produto produtoEnc = almoxarifado.getProdutos().get(0);
             System.out.println(produtoEnc.getNome());
             System.out.println(produtoEnc.getId());
+            return almoxarifado;
+        }
+    }
 
+
+    public void mockAdicionaProdutos(String idAlmoxarifado) {
+        List<Produto> produtos = List.of(new Produto("blasdk","Mamao",2300D));
+        this.adicionaProdutos(idAlmoxarifado,produtos);
+    }
+    public void adicionaProdutos(String idAlmoxarifado, List<Produto> produto) {
+        commandGateway.send(new AdicionarProdutosAlmoxarifadoCommand(idAlmoxarifado, produto));
+        Almoxarifado almoxarifado = obterAlmoxarife(idAlmoxarifado);
+        if(almoxarifado.getProdutos().size()<2){
+            throw new IllegalStateException("n adicionou");
         }
 
+    }
 
+    public void mockAdicionaNome(String almoxarifado){
+        this.commandGateway.send(new AlterarAlmoxarifadoCommand(almoxarifado,"Uepa"));
+        Almoxarifado almoxarifado1 = obterAlmoxarife(almoxarifado);
+        if(almoxarifado1 != null) {
+            System.out.println(almoxarifado1);
+        }
     }
 
 

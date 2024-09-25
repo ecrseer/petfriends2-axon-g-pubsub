@@ -1,7 +1,11 @@
 package gj.infnet.almoxarifadogjpetfriends.domain;
 
+import gj.infnet.almoxarifadogjpetfriends.command.AdicionarProdutosAlmoxarifadoCommand;
+import gj.infnet.almoxarifadogjpetfriends.command.AlterarAlmoxarifadoCommand;
 import gj.infnet.almoxarifadogjpetfriends.command.CriarAlmoxarifadoCommand;
 
+import gj.infnet.almoxarifadogjpetfriends.events.AdicionadoProdutoAlmoxarifado;
+import gj.infnet.almoxarifadogjpetfriends.events.AlteradoAlmoxarifado;
 import gj.infnet.almoxarifadogjpetfriends.events.CriadoAlmoxarifado;
 
 import jakarta.persistence.*;
@@ -45,8 +49,42 @@ public class Almoxarifado implements Serializable {
     @EventSourcingHandler
     protected void on(CriadoAlmoxarifado evento) {
         this.id = evento.getId();
-        this.nome = "Almoxarife de Joatinga";
+        this.nome = "Almoxarife de Pindamonhagama";
         this.produtos.add(evento.getProduto());
+    }
+
+
+    @CommandHandler
+    public void on(AlterarAlmoxarifadoCommand comando) {
+        AggregateLifecycle.apply(
+                new AlteradoAlmoxarifado(
+                        comando.getId(), comando.getNome()
+                )
+
+        );
+    }
+
+    @EventSourcingHandler
+    protected void on(AlteradoAlmoxarifado evento) {
+        this.setNome(evento.getNome());
+        System.out.println(this.produtos);
+    }
+
+
+
+
+    @CommandHandler
+    public void on(AdicionarProdutosAlmoxarifadoCommand comando) {
+        List<Produto> comandoProdutos = comando.getProdutos();
+
+        AggregateLifecycle.apply(
+                new AdicionadoProdutoAlmoxarifado(comando.getId(), comandoProdutos.get(0))
+        );
+    }
+
+    @EventSourcingHandler
+    protected void on(AdicionadoProdutoAlmoxarifado evento) {
+        this.produtos.add(new Produto(evento.getProduto()));
         System.out.println(this.produtos);
     }
 
