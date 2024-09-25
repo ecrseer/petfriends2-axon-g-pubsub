@@ -35,32 +35,21 @@ public class PetfriendsPedidosGjApplication implements CommandLineRunner {
     @Autowired
     private StreamBridge streamBridge;
 
-    private void sendGclou() {
-        String mensagem = "Somente uma mensagem";
-        LOG.info("Enviando uma mensagem: " + mensagem);
-        streamBridge.send("enviarMensagem-out-0", mensagem);
-    }
-
     private void preparaPedido() {
-//        String mensagem = "Pedido-42";
-//        LOG.info("Preparando: " + mensagem);
         Pedido pedido = new Pedido(IdUnico.criar(),
-                Date.from(Instant.now()),12L
-                ,"abds-defg42",
+                Date.from(Instant.now()), 12L
+                , "abds-defg42",
                 Pedido.PedidoStatus.EM_PREPARACAO,
                 List.of(
                         new Produto("32", "Brinquedo para Pássaros", 100D)
                 )
         );
-        MensagemGPub mensagem = new MensagemGPub("em-pppa",pedido);
+        MensagemGPub mensagem = new MensagemGPub("em-pppa", pedido);
         streamBridge.send("pedido-em-preparacao-topico", mensagem);
     }
 
     @Override
     public void run(String... args) throws Exception {
-//        this.sendGclou();
         this.preparaPedido();
-//        pedidoService.criarPedido(new Pedido());
-        System.out.println("\n-------uepan");
     }
 }

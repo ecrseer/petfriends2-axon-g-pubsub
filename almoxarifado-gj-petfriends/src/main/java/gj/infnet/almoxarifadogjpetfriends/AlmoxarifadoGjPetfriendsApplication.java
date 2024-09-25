@@ -3,6 +3,7 @@ package gj.infnet.almoxarifadogjpetfriends;
 import gj.infnet.almoxarifadogjpetfriends.domain.Almoxarifado;
 import gj.infnet.almoxarifadogjpetfriends.domain.Produto;
 import gj.infnet.almoxarifadogjpetfriends.infra.IdUnico;
+import gj.infnet.almoxarifadogjpetfriends.infra.external.MocksData;
 import gj.infnet.almoxarifadogjpetfriends.infra.external.Pedido;
 import gj.infnet.almoxarifadogjpetfriends.service.AlmoxarifadoService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,19 +33,6 @@ public class AlmoxarifadoGjPetfriendsApplication implements CommandLineRunner {
     }
 
 
-    private List<Produto> mockProdutos = List.of(
-            new Produto(IdUnico.criar(),"Goiaba",42D),
-            new Produto("26","Mamao",2300D),
-            new Produto("27","Jujuba",14D),
-            new Produto("28","Bombom",44D),
-            new Produto("29","Pipoca",12D),
-            new Produto("30","Cachorro",100D),
-            new Produto("31","Gato",100D),
-            new Produto("32","Papagaio",100D),
-            new Produto("33","Pato",100D),
-            new Produto("34","Galinha",100D)
-            );
-
     public Pedido mockPedidoFactory(List<Produto> prods) {
         Pedido emAndamento = new Pedido(UUID.randomUUID().toString(),
                 Date.from(Instant.now()),
@@ -58,17 +46,11 @@ public class AlmoxarifadoGjPetfriendsApplication implements CommandLineRunner {
     @Override
     public void run(String... args) throws Exception {
 
-        System.out.println("testando");
+        System.out.println("inicializa almoxarifado");
+        Almoxarifado almoxarifado = this.almoxarifadoService.criaAlmoxarifado();
 
-
-        Pedido emAndamento = mockPedidoFactory(List.of());
-        Almoxarifado almoxarifado = this.almoxarifadoService.criaAlmoxarifado(emAndamento);
-        String idAlmoxarifado = almoxarifado.getId();
-
-        this.almoxarifadoService.adicionaProdutos(idAlmoxarifado,this.mockProdutos);
-
-        Pedido pedidoRecebido = mockPedidoFactory(this.mockProdutos.subList(2, 4));
-        this.almoxarifadoService.removeProdutos(idAlmoxarifado,pedidoRecebido);
+        Pedido pedidoRecebido = mockPedidoFactory(MocksData.petProdutos.subList(2, 4));
+        this.almoxarifadoService.removeProdutos(almoxarifado.getId(), pedidoRecebido);
 
     }
 }
