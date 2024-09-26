@@ -6,4 +6,5 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface AlmoxarifadoRepository extends JpaRepository<Almoxarifado, String> {
 
+    Almoxarifado findAlmoxarifadoByEndereco_Cidade(String cidade);
 }

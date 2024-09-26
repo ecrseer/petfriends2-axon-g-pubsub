@@ -23,8 +23,13 @@ public class Produto implements Serializable {
     private String id;
     private String nome;
     private Double preco;
+    private TiposCategoria categoria;
 
-//    private Endereco endereco;
+    public enum TiposCategoria {HIGIENE, DIVERSAO, FARMACIA}
+
+    private int quantidadeEmEstoque;
+    private Date dataDeValidade;
+
 
     public Produto(String nome) {
         this.nome = nome;
@@ -34,6 +39,31 @@ public class Produto implements Serializable {
         this.id = produto.getId();
         this.nome = produto.getNome();
         this.preco = produto.getPreco();
+    }
+
+
+    public TiposCategoria getCategoria() {
+        return categoria;
+    }
+
+    public void setCategoria(TiposCategoria categoria) {
+        this.categoria = categoria;
+    }
+
+    public int getQuantidadeEmEstoque() {
+        return quantidadeEmEstoque;
+    }
+
+    public void setQuantidadeEmEstoque(int quantidadeEmEstoque) {
+        this.quantidadeEmEstoque = quantidadeEmEstoque;
+    }
+
+    public Date getDataDeValidade() {
+        return dataDeValidade;
+    }
+
+    public void setDataDeValidade(Date dataDeValidade) {
+        this.dataDeValidade = dataDeValidade;
     }
 
     public String getId() {

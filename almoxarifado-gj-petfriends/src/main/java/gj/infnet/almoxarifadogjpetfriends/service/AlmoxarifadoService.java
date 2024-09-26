@@ -13,6 +13,8 @@ import gj.infnet.almoxarifadogjpetfriends.infra.external.Pedido;
 import gj.infnet.almoxarifadogjpetfriends.infra.MensagemGPub;
 import lombok.RequiredArgsConstructor;
 import org.axonframework.commandhandling.gateway.CommandGateway;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cloud.stream.function.StreamBridge;
 import org.springframework.context.annotation.Bean;
 import org.springframework.messaging.Message;
 import org.springframework.stereotype.Service;
@@ -29,6 +31,8 @@ public class AlmoxarifadoService {
     private final CommandGateway commandGateway;
     private final AlmoxarifadoRepository almoxarifadoRepository;
 
+    @Autowired
+    private StreamBridge streamBridge;
 
     @Bean
     public Consumer<Message<MensagemGPub>> pedidoEmPreparacaoTopicoSub() {
@@ -45,8 +49,11 @@ public class AlmoxarifadoService {
         var json = (LinkedHashMap<String, Object>) valor;
         Pedido pedido = new Pedido(json);
 
-        Almoxarifado almoxarifado = almoxarifadoRepository.findAll().get(0);
+//        Almoxarifado almoxarifado = almoxarifadoRepository.findAll().get(0);
+        Almoxarifado almoxarifado = almoxarifadoRepository.findAlmoxarifadoByEndereco_Cidade("Rio de Janeiro");
         this.removeProdutos(almoxarifado.getId(), pedido);
+        this.streamBridge.send("pedido-preparado-topico", mensagem.getPayload());
+
     }
 
 

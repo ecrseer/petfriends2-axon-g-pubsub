@@ -36,6 +36,9 @@ public class Almoxarifado implements Serializable {
     private String id;
     private String nome;
 
+    @OneToOne(cascade = CascadeType.ALL)
+    private Endereco endereco;
+
 
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     @JoinColumn(name = "produto_id")
@@ -51,7 +54,6 @@ public class Almoxarifado implements Serializable {
     @EventSourcingHandler
     protected void on(CriadoAlmoxarifado evento) {
         this.id = evento.getId();
-        this.nome = "Almoxarife de Pindamonhagama";
         this.produtos = new ArrayList<>();
     }
 
@@ -68,15 +70,17 @@ public class Almoxarifado implements Serializable {
 
     @EventSourcingHandler
     protected void on(RemovidoProdutoAlmoxarifado evento) {
+        if(produtos.size()===0){
+            throw new IllegalStateException("Não ha produtos para serem enviados");
+        }
+
         this.produtos.removeIf(item ->
                 {
                     Pattern pattern = Pattern.compile(evento.getProduto().getNome(), Pattern.CASE_INSENSITIVE);
                     Matcher matcher = pattern.matcher(item.getNome());
                     return matcher.find();
-//                    return item.getId().equals(evento.getProduto().getId());
                 }
         );
-
     }
 
 
@@ -112,6 +116,13 @@ public class Almoxarifado implements Serializable {
         System.out.println(this.produtos);
     }
 
+    public Endereco getEndereco() {
+        return endereco;
+    }
+
+    public void setEndereco(Endereco endereco) {
+        this.endereco = endereco;
+    }
 
     public String getId() {
         return id;
