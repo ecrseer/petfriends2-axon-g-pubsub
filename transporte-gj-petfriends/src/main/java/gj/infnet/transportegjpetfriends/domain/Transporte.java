@@ -8,4 +8,6 @@ public class Transporte {
     @AggregateIdentifier
     private String id;
     private String status;
+
+
 }
