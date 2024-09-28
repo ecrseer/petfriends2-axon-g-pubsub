@@ -18,6 +18,6 @@ public class TransporteGjPetfriendsApplication implements CommandLineRunner {
 
     @Override
     public void run(String... args) throws Exception {
-        this.transporteService.criarTransporte();
+
     }
 }

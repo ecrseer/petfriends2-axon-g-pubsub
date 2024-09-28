@@ -48,6 +48,9 @@ public class Transporte {
     @EventSourcingHandler
     protected void on(IniciadoTransporte evento) {
         this.id = evento.getId();
+        if(evento.getEndereco() == null){
+            throw new IllegalArgumentException("Endereço de entrega não pode ser vazio");
+        }
         this.enderecoEntrega = evento.getEndereco();
 
     }

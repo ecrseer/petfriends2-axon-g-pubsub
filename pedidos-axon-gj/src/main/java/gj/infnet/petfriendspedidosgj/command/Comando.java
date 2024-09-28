@@ -6,13 +6,20 @@ import org.axonframework.modelling.command.TargetAggregateIdentifier;
 public class Comando {
 
     @TargetAggregateIdentifier
-    public String id;
+    private String id;
 
-    public Comando(){
-        this.id=IdUnico.criar();
+
+
+    public String getId() {
+        return id;
     }
+
     public Comando(String id) {
         this.id = id;
+    }
+
+    public Comando() {
+
     }
 
 }

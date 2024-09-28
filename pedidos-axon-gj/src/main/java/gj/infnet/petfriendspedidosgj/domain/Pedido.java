@@ -2,6 +2,7 @@ package gj.infnet.petfriendspedidosgj.domain;
 
 import gj.infnet.petfriendspedidosgj.command.CriarPedidoCommand;
 import gj.infnet.petfriendspedidosgj.events.PedidoCriado;
+import gj.infnet.petfriendspedidosgj.infra.IdUnico;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -45,13 +46,28 @@ public class Pedido  {
 
     @CommandHandler
     public Pedido(CriarPedidoCommand criarComand){
-        AggregateLifecycle.apply(new PedidoCriado());
+        String id = IdUnico.criar();
+        AggregateLifecycle.apply(
+                new PedidoCriado(id,criarComand.getDataPedido())
+        ).andThen(() -> {
+            for (Produto produto : criarComand.getProdutos()) {
+//                AggregateLifecycle.apply(new PedidoCriado(id,criarComand.getDataPedido()));
+            }
+        });
+
     }
     @EventSourcingHandler
     protected void on(PedidoCriado evento){
-        this.id=evento.id;
-        this.status=evento.status;
+        this.id=evento.getId();
+        this.status=evento.getStatus();
+        this.dataPedido=evento.getDataPedido();
     }
+
+//    @EventSourcingHandler
+//    protected void on(Adicionado evento){
+//        this.id=evento.id;
+//        this.status=evento.status;
+//    }
 
 
 

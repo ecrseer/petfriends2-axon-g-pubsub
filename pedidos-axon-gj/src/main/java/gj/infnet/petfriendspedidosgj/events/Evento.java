@@ -4,13 +4,14 @@ import gj.infnet.petfriendspedidosgj.infra.IdUnico;
 
 public class Evento {
 
-    public String id;
+    private String id;
 
-    public Evento(){
-        String id = IdUnico.criar();
-        this.id=id;
+    public String getId() {
+        return id;
     }
+
     public Evento(String id){
         this.id = id;
     }
+
 }

@@ -27,5 +27,8 @@ public class PedidoQueryServiceImpl {
     public Optional<Pedido> encontraPedidoPorId(String uid){
         return this.pedidoRepository.findById(uid);
     }
+    public List<Pedido> obtemTodosPedidos(){
+        return this.pedidoRepository.findAll();
+    }
 
 }

@@ -36,7 +36,7 @@ public class PetfriendsPedidosGjApplication implements CommandLineRunner {
     private StreamBridge streamBridge;
 
     private void preparaPedido() {
-        Pedido pedido = new Pedido(IdUnico.criar(),
+        Pedido mockPedido = new Pedido(IdUnico.criar(),
                 Date.from(Instant.now()), 12L
                 , null,
                 Pedido.PedidoStatus.EM_PREPARACAO,
@@ -44,8 +44,7 @@ public class PetfriendsPedidosGjApplication implements CommandLineRunner {
                         new Produto("32", "Brinquedo para Pássaros", 100D)
                 )
         );
-        MensagemGPub mensagem = new MensagemGPub("Novo pedido", pedido);
-        streamBridge.send("pedido-em-preparacao-topico", mensagem);
+        pedidoService.criarPedido(mockPedido);
     }
 
     @Override
