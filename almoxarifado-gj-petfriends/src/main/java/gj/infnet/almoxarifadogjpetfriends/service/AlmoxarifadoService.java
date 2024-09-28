@@ -12,6 +12,7 @@ import gj.infnet.almoxarifadogjpetfriends.infra.external.MocksData;
 import gj.infnet.almoxarifadogjpetfriends.infra.external.Pedido;
 import gj.infnet.almoxarifadogjpetfriends.infra.MensagemGPub;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.axonframework.commandhandling.gateway.CommandGateway;
 import org.springframework.context.annotation.Bean;
 import org.springframework.messaging.Message;
@@ -24,15 +25,16 @@ import java.util.function.Consumer;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class AlmoxarifadoService {
 
     private final CommandGateway commandGateway;
     private final AlmoxarifadoRepository almoxarifadoRepository;
 
-
     @Bean
     public Consumer<Message<MensagemGPub>> pedidoEmPreparacaoTopicoSub() {
         try {
+            System.out.println();
             return this::recebePedidoEmPreparacao;
         } catch (Exception e) {
             throw new RuntimeException(e);
@@ -93,7 +95,7 @@ public class AlmoxarifadoService {
         commandGateway.send(new EnviarPedidoEmPreparacaoCommand(idAlmoxarifado, pedido));
         Almoxarifado almoxarifado1 = obterAlmoxarife(idAlmoxarifado);
         if (almoxarifado1 != null) {
-            System.out.println(almoxarifado1);
+            log.info("Produtos removidos", almoxarifado1);
         }
     }
 
@@ -101,7 +103,7 @@ public class AlmoxarifadoService {
         this.commandGateway.send(new AlterarAlmoxarifadoCommand(almoxarifado, "Uepa"));
         Almoxarifado almoxarifado1 = obterAlmoxarife(almoxarifado);
         if (almoxarifado1 != null) {
-            System.out.println(almoxarifado1);
+            log.info("editado", almoxarifado1);
         }
     }
 

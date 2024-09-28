@@ -49,8 +49,6 @@ public class AlmoxarifadoGjPetfriendsApplication implements CommandLineRunner {
         System.out.println("inicializa almoxarifado");
         Almoxarifado almoxarifado = this.almoxarifadoService.criaAlmoxarifado();
 
-        Pedido pedidoRecebido = mockPedidoFactory(MocksData.petProdutos.subList(2, 4));
-        this.almoxarifadoService.removeProdutos(almoxarifado.getId(), pedidoRecebido);
 
     }
 }

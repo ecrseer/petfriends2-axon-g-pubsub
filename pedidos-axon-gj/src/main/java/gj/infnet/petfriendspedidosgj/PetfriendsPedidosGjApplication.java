@@ -38,13 +38,13 @@ public class PetfriendsPedidosGjApplication implements CommandLineRunner {
     private void preparaPedido() {
         Pedido pedido = new Pedido(IdUnico.criar(),
                 Date.from(Instant.now()), 12L
-                , "abds-defg42",
+                , null,
                 Pedido.PedidoStatus.EM_PREPARACAO,
                 List.of(
                         new Produto("32", "Brinquedo para Pássaros", 100D)
                 )
         );
-        MensagemGPub mensagem = new MensagemGPub("em-pppa", pedido);
+        MensagemGPub mensagem = new MensagemGPub("Novo pedido", pedido);
         streamBridge.send("pedido-em-preparacao-topico", mensagem);
     }
 
