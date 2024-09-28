@@ -2,10 +2,9 @@ package gj.infnet.petfriendspedidosgj.domain;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
+import org.axonframework.modelling.command.EntityId;
+
 import java.io.Serializable;
 
 @Setter
@@ -13,8 +12,11 @@ import java.io.Serializable;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
+@EqualsAndHashCode
+@ToString
 public class Produto implements Serializable {
 
+    @EntityId
     @Id
     private String id;
     private String nome;

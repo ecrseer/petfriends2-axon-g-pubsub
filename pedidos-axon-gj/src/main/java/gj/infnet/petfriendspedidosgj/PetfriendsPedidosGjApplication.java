@@ -24,16 +24,12 @@ public class PetfriendsPedidosGjApplication implements CommandLineRunner {
     @Autowired
     PedidoService pedidoService;
 
-    @Autowired
-    PedidoQueryController pedidoQueryController;
 
     public static void main(String[] args) {
         SpringApplication.run(PetfriendsPedidosGjApplication.class, args);
     }
 
 
-    @Autowired
-    private StreamBridge streamBridge;
 
     private void preparaPedido() {
         Pedido mockPedido = new Pedido(IdUnico.criar(),

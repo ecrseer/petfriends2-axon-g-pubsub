@@ -1,12 +1,11 @@
 package gj.infnet.petfriendspedidosgj.domain;
 
 import gj.infnet.petfriendspedidosgj.command.CriarPedidoCommand;
+import gj.infnet.petfriendspedidosgj.events.AdicionadoProdutoPedido;
 import gj.infnet.petfriendspedidosgj.events.PedidoCriado;
 import gj.infnet.petfriendspedidosgj.infra.IdUnico;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import org.axonframework.commandhandling.CommandHandler;
 import org.axonframework.eventsourcing.EventSourcingHandler;
 import org.axonframework.modelling.command.AggregateIdentifier;
@@ -20,10 +19,11 @@ import java.util.List;
 
 @Aggregate
 @Entity
-@Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class Pedido  {
+@Getter
+@Setter
+public class Pedido {
 
     @Id
     @AggregateIdentifier
@@ -45,31 +45,38 @@ public class Pedido  {
     }
 
     @CommandHandler
-    public Pedido(CriarPedidoCommand criarComand){
+    public Pedido(CriarPedidoCommand criarComand) {
         String id = IdUnico.criar();
         AggregateLifecycle.apply(
-                new PedidoCriado(id,criarComand.getDataPedido())
+                new PedidoCriado(id, criarComand.getDataPedido())
         ).andThen(() -> {
             for (Produto produto : criarComand.getProdutos()) {
-//                AggregateLifecycle.apply(new PedidoCriado(id,criarComand.getDataPedido()));
+                AggregateLifecycle.apply(new AdicionadoProdutoPedido(id, produto));
             }
         });
 
     }
+
     @EventSourcingHandler
-    protected void on(PedidoCriado evento){
-        this.id=evento.getId();
-        this.status=evento.getStatus();
-        this.dataPedido=evento.getDataPedido();
+    protected void on(PedidoCriado evento) {
+        this.id = evento.getId();
+        this.status = evento.getStatus();
+        this.dataPedido = evento.getDataPedido();
+        this.produtos = new ArrayList<>();
     }
 
-//    @EventSourcingHandler
-//    protected void on(Adicionado evento){
-//        this.id=evento.id;
-//        this.status=evento.status;
-//    }
+    @EventSourcingHandler
+    protected void on(AdicionadoProdutoPedido evento) {
+        Produto produto = evento.getProduto();
+        if (produto.getPreco() < 0) {
+            throw new IllegalArgumentException("Preço do produto não pode ser negativo");
+        }
+        if (produto.getNome().isEmpty()) {
+            throw new IllegalArgumentException("Nome do produto não pode ser vazio");
+        }
 
-
+        this.produtos.add(evento.getProduto());
+    }
 
 
     public String getId() {
