@@ -32,7 +32,7 @@ public class TransporteService {
     }
 
     private void recebePedidoEmTransito(Message<MensagemGPub> mensagemGPubMessage) {
-        log.info("Criando transporte");
+        log.info("Criando transporte", mensagemGPubMessage.toString());
         commandGateway.send(new EnviarPedidoEmTransitoCommand(IdUnico.criar(), List.of("1", "2"), "Rua dos Bobos, 0"));
     }
 

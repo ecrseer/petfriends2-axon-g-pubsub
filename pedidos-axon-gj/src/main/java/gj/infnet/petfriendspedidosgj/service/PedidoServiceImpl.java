@@ -46,7 +46,7 @@ public class PedidoServiceImpl implements PedidoService {
     public void on(PedidoFechado event) {
         Optional<Pedido> optPedido = pedidoRepository.findById(event.getId());
         if (optPedido.isPresent()) {
-            MensagemGPub msg = new MensagemGPub("Almoxarifado:preparar pedido", "optPedido.get()");
+            MensagemGPub msg = new MensagemGPub("Almoxarifado:preparar pedido", optPedido.get());
             streamBridge.send("pedido-em-preparacao-topico", msg);
 
         }
@@ -54,7 +54,7 @@ public class PedidoServiceImpl implements PedidoService {
 
 
     @Bean
-    public Consumer<Message<String>> pedidoEmPreparacaoTopicoSub() {
+    public Consumer<Message<MensagemGPub>> pedidoPreparadoTopicoSub() {
         try {
             return this::recebePedidoPreparadoAlmoxarifado;
         } catch (Exception e) {
@@ -62,21 +62,18 @@ public class PedidoServiceImpl implements PedidoService {
         }
     }
 
-    private void recebePedidoPreparadoAlmoxarifado(Message<String> mensagem) {
+    private void recebePedidoPreparadoAlmoxarifado(Message<MensagemGPub> mensagem) {
         try {
-            log.info(mensagem.getPayload());
-//            Object valor = mensagem.getPayload().getValor();
-//            var json = (LinkedHashMap<String, Object>) valor;
-//            ReceberPedidoEmTransito comando = new ObjectMapper().convertValue(json, ReceberPedidoEmTransito.class);
-//            if (comando.getStatus() == Pedido.PedidoStatus.EM_TRANSITO) {
-//                commandGateway.send(comando);
-//            }
+            log.info("Recebendo pedido preparado no almoxarifado",mensagem.getPayload().toString());
+            Object valor = mensagem.getPayload().getValor();
+            var json = (LinkedHashMap<String, Object>) valor;
+            ReceberPedidoEmTransito comando = new ObjectMapper().convertValue(json, ReceberPedidoEmTransito.class);
+            commandGateway.send(comando);
         } catch (Exception e) {
-            log.info("Erro ao receber pedido preparado no almoxarifado", e.getMessage());
-            throw e;
+            log.error("Erro ao receber pedido preparado no almoxarifado", e.getMessage());
+//            throw e;
         }
     }
-
     @EventHandler
     public void on(PedidoEmTransito event) {
         Optional<Pedido> optPedido = pedidoRepository.findById(event.getId());

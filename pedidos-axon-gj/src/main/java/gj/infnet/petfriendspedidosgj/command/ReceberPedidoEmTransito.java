@@ -1,5 +1,6 @@
 package gj.infnet.petfriendspedidosgj.command;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import gj.infnet.petfriendspedidosgj.domain.Pedido;
 import gj.infnet.petfriendspedidosgj.domain.Produto;
 import lombok.Getter;
@@ -10,6 +11,7 @@ import java.util.List;
 
 @Getter
 @Setter
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class ReceberPedidoEmTransito extends Comando {
 
 

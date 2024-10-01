@@ -43,6 +43,7 @@ public class AlmoxarifadoService {
     @SuppressWarnings("unchecked")
     private void recebePedidoEmPreparacao(Message<MensagemGPub> mensagem) {
         try {
+
             Object valor = mensagem.getPayload().getValor();
             var json = (LinkedHashMap<String, Object>) valor;
             Pedido pedido = new Pedido(json);
@@ -51,7 +52,7 @@ public class AlmoxarifadoService {
                 this.removeProdutos(almoxarifado.getId(), pedido);
                 pedido.setStatus(Pedido.PedidoStatus.EM_TRANSITO);
                 MensagemGPub mensagemComPedido = new MensagemGPub("Transporte: notificar pedido em transito", pedido);
-                streamBridge.send("pedido-em-preparacao-topico", mensagemComPedido);
+                streamBridge.send("pedido-preparado-topico", mensagemComPedido);
             }
 
         } catch (Exception e) {
