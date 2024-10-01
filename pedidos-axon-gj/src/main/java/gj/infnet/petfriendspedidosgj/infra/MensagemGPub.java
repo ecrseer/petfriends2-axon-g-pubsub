@@ -1,8 +1,13 @@
 package gj.infnet.petfriendspedidosgj.infra;
 
 import lombok.Data;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
-@Data
+@Setter
+@Getter
+@NoArgsConstructor
 public class MensagemGPub {
     private String titulo;
     private Object valor;
@@ -11,4 +16,5 @@ public class MensagemGPub {
         this.titulo = titulo;
         this.valor = valor;
     }
+
 }
