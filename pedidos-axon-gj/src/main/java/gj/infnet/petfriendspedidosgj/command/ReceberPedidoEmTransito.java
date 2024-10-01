@@ -15,7 +15,6 @@ import java.util.List;
 public class ReceberPedidoEmTransito extends Comando {
 
 
-    private String id;
     private Pedido.PedidoStatus status;
 
     public ReceberPedidoEmTransito(String id,
@@ -24,8 +23,8 @@ public class ReceberPedidoEmTransito extends Comando {
         this.status = status;
     }
 
+
     public ReceberPedidoEmTransito() {
 
     }
-
 }
