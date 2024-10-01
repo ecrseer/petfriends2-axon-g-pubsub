@@ -14,6 +14,7 @@ import gj.infnet.almoxarifadogjpetfriends.infra.MensagemGPub;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.axonframework.commandhandling.gateway.CommandGateway;
+import org.springframework.cloud.stream.function.StreamBridge;
 import org.springframework.context.annotation.Bean;
 import org.springframework.messaging.Message;
 import org.springframework.stereotype.Service;
@@ -30,44 +31,46 @@ public class AlmoxarifadoService {
 
     private final CommandGateway commandGateway;
     private final AlmoxarifadoRepository almoxarifadoRepository;
+    private final StreamBridge streamBridge;
 
     @Bean
     public Consumer<Message<MensagemGPub>> pedidoEmPreparacaoTopicoSub() {
-        try {
-            System.out.println();
-            return this::recebePedidoEmPreparacao;
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
+
+        return this::recebePedidoEmPreparacao;
+
     }
 
     @SuppressWarnings("unchecked")
     private void recebePedidoEmPreparacao(Message<MensagemGPub> mensagem) {
-        Object valor = mensagem.getPayload().getValor();
-        var json = (LinkedHashMap<String, Object>) valor;
-        Pedido pedido = new Pedido(json);
+        try {
+            Object valor = mensagem.getPayload().getValor();
+            var json = (LinkedHashMap<String, Object>) valor;
+            Pedido pedido = new Pedido(json);
+            if (pedido.getStatus() == Pedido.PedidoStatus.FECHADO) {
+                Almoxarifado almoxarifado = almoxarifadoRepository.findAll().get(0);
+                this.removeProdutos(almoxarifado.getId(), pedido);
+                pedido.setStatus(Pedido.PedidoStatus.EM_TRANSITO);
+                MensagemGPub mensagemComPedido = new MensagemGPub("Transporte: notificar pedido em transito", pedido);
+                streamBridge.send("pedido-em-preparacao-topico", mensagemComPedido);
+            }
 
-        Almoxarifado almoxarifado = almoxarifadoRepository.findAll().get(0);
-        this.removeProdutos(almoxarifado.getId(), pedido);
+        } catch (Exception e) {
+            log.info("Erro ao receber pedido em preparação", e);
+        }
+
     }
 
 
     public Almoxarifado criaAlmoxarifado(Pedido pedido) {
         String idAlmoxarifado = IdUnico.criar();
-        commandGateway.send(
-                new CriarAlmoxarifadoCommand(idAlmoxarifado,
-                        pedido.getProdutos())
-        );
+        commandGateway.send(new CriarAlmoxarifadoCommand(idAlmoxarifado, pedido.getProdutos()));
         this.adicionaProdutos(idAlmoxarifado, MocksData.petProdutos);
         return this.obterAlmoxarife(idAlmoxarifado);
     }
 
     public Almoxarifado criaAlmoxarifado() {
         String idAlmoxarifado = IdUnico.criar();
-        commandGateway.send(
-                new CriarAlmoxarifadoCommand(idAlmoxarifado,
-                        List.of())
-        );
+        commandGateway.send(new CriarAlmoxarifadoCommand(idAlmoxarifado, List.of()));
         this.adicionaProdutos(idAlmoxarifado, MocksData.petProdutos);
         return this.obterAlmoxarife(idAlmoxarifado);
     }

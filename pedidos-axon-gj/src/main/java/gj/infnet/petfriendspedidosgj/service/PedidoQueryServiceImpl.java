@@ -18,6 +18,7 @@ public class PedidoQueryServiceImpl {
     private final PedidoRepository pedidoRepository;
 
     public List<Object> listarEventosPorId(String id){
+
         var streamEventos = eventStore.readEvents(id,0)
                 .asStream();
         return streamEventos.map(evento->evento.getPayload())

@@ -5,11 +5,8 @@ import gj.infnet.almoxarifadogjpetfriends.command.AlterarAlmoxarifadoCommand;
 import gj.infnet.almoxarifadogjpetfriends.command.CriarAlmoxarifadoCommand;
 
 import gj.infnet.almoxarifadogjpetfriends.command.EnviarPedidoEmPreparacaoCommand;
-import gj.infnet.almoxarifadogjpetfriends.events.AdicionadoProdutoAlmoxarifado;
-import gj.infnet.almoxarifadogjpetfriends.events.AlteradoAlmoxarifado;
-import gj.infnet.almoxarifadogjpetfriends.events.CriadoAlmoxarifado;
+import gj.infnet.almoxarifadogjpetfriends.events.*;
 
-import gj.infnet.almoxarifadogjpetfriends.events.RemovidoProdutoAlmoxarifado;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
@@ -63,6 +60,7 @@ public class Almoxarifado implements Serializable {
                     new RemovidoProdutoAlmoxarifado(comando.getId(), produto)
             );
         }
+        AggregateLifecycle.apply(new PedidoDespachado(comando.getId()));
 
     }
 
@@ -73,7 +71,6 @@ public class Almoxarifado implements Serializable {
                     Pattern pattern = Pattern.compile(evento.getProduto().getNome(), Pattern.CASE_INSENSITIVE);
                     Matcher matcher = pattern.matcher(item.getNome());
                     return matcher.find();
-//                    return item.getId().equals(evento.getProduto().getId());
                 }
         );
 

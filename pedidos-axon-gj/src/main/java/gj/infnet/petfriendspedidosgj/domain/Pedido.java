@@ -1,8 +1,11 @@
 package gj.infnet.petfriendspedidosgj.domain;
 
 import gj.infnet.petfriendspedidosgj.command.CriarPedidoCommand;
+import gj.infnet.petfriendspedidosgj.command.ReceberPedidoEmTransito;
 import gj.infnet.petfriendspedidosgj.events.AdicionadoProdutoPedido;
 import gj.infnet.petfriendspedidosgj.events.PedidoCriado;
+import gj.infnet.petfriendspedidosgj.events.PedidoEmTransito;
+import gj.infnet.petfriendspedidosgj.events.PedidoFechado;
 import gj.infnet.petfriendspedidosgj.infra.IdUnico;
 import jakarta.persistence.*;
 import lombok.*;
@@ -34,11 +37,12 @@ public class Pedido {
     private String transporteId;
     private PedidoStatus status;
 
-
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     @JoinColumn(name = "produto_id")
     private List<Produto> produtos;
 
+
+    private String endereco;
 
     public enum PedidoStatus {
         NOVO, FECHADO, EM_PREPARACAO, EM_TRANSITO, ENTREGUE
@@ -53,6 +57,10 @@ public class Pedido {
             for (Produto produto : criarComand.getProdutos()) {
                 AggregateLifecycle.apply(new AdicionadoProdutoPedido(id, produto));
             }
+        }).andThen(() -> {
+            AggregateLifecycle.apply(
+                    new PedidoFechado(id)
+            );
         });
 
     }
@@ -76,6 +84,24 @@ public class Pedido {
         }
 
         this.produtos.add(evento.getProduto());
+    }
+
+    @EventSourcingHandler
+    protected void on(PedidoFechado evento) {
+        this.status = evento.getStatus();
+    }
+
+
+
+
+
+    @CommandHandler
+    public void on(ReceberPedidoEmTransito emTransito) {
+        AggregateLifecycle.apply(new PedidoEmTransito(id));
+    }
+    @EventSourcingHandler
+    protected void on(PedidoEmTransito evento) {
+        this.status = evento.getStatus();
     }
 
 

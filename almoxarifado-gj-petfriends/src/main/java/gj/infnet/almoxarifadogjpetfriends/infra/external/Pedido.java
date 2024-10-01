@@ -21,6 +21,7 @@ public class Pedido {
     private String transporteId;
     private PedidoStatus status;
     List<Produto> produtos;
+    private String endereco;
 
 
     public enum PedidoStatus {

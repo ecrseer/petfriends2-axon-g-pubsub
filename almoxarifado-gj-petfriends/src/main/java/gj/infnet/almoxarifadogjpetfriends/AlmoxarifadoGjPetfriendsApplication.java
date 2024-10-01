@@ -33,15 +33,15 @@ public class AlmoxarifadoGjPetfriendsApplication implements CommandLineRunner {
     }
 
 
-    public Pedido mockPedidoFactory(List<Produto> prods) {
-        Pedido emAndamento = new Pedido(UUID.randomUUID().toString(),
-                Date.from(Instant.now()),
-                12L,
-                "42",
-                Pedido.PedidoStatus.EM_PREPARACAO,
-                prods);
-        return emAndamento;
-    }
+//    public Pedido mockPedidoFactory(List<Produto> prods) {
+//        Pedido emAndamento = new Pedido(UUID.randomUUID().toString(),
+//                Date.from(Instant.now()),
+//                12L,
+//                "42",
+//                Pedido.PedidoStatus.EM_PREPARACAO,
+//                prods);
+//        return emAndamento;
+//    }
 
     @Override
     public void run(String... args) throws Exception {

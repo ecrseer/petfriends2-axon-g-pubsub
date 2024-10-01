@@ -38,7 +38,8 @@ public class PetfriendsPedidosGjApplication implements CommandLineRunner {
                 Pedido.PedidoStatus.EM_PREPARACAO,
                 List.of(
                         new Produto("32", "Brinquedo para Pássaros", 100D)
-                )
+                ),
+                "Rua dos Bobos, 0"
         );
         pedidoService.criarPedido(mockPedido);
     }
